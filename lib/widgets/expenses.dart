@@ -20,6 +20,13 @@ class _ExpensesState extends State<Expenses> {
 
   ];
 
+  void _openAddExpense() {
+      showModalBottomSheet(
+        context: context,
+        builder: (ctx) => Text('bottom modal')
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +47,10 @@ class _ExpensesState extends State<Expenses> {
         ),
         // backgroundColor: Color(LinearGradient(colors: [Color(Colors.green), Color(Colors.blue)])),
         actions: [
-        IconButton(onPressed: () {}, icon: const Icon(Icons.add))
+        IconButton(
+          onPressed: _openAddExpense,
+          icon: const Icon(Icons.add)
+          )
         ]),
       body: Column(children: [
         const Text('chart'),
