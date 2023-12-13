@@ -44,7 +44,7 @@ class _NewExpenseState extends State<NewExpense> {
           Row(
             children: [
               ElevatedButton(
-                onPressed: () {print('fff');},
+                onPressed: () {Navigator.pop(context);},
                 child: Text('Закрити')
               ),
               ElevatedButton(
