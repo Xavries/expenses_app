@@ -1,3 +1,4 @@
+import 'package:expenses_app/models/expense.dart';
 import 'package:flutter/material.dart';
 
 class NewExpense extends StatefulWidget {
@@ -12,13 +13,18 @@ class NewExpense extends StatefulWidget {
 class _NewExpenseState extends State<NewExpense> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
+  DateTime? _selectedDate;
 
-  void _openDatePicker() {
+  void _openDatePicker() async {
     final now = DateTime.now();
     final firstDate = DateTime(now.year - 5, now.month, now.day);
     final lastDate = DateTime(now.year + 1, now.month, now.day);
 
-    showDatePicker(context: context, firstDate: firstDate, lastDate: lastDate);
+    final pickedDate = await showDatePicker(context: context, firstDate: firstDate, lastDate: lastDate);
+
+    setState(() {
+      _selectedDate = pickedDate;
+    });
   }
 
   @override
@@ -59,7 +65,7 @@ class _NewExpenseState extends State<NewExpense> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('selected date'),
+                    Text(_selectedDate == null ? 'Виберіть дату' : dateFormatter.format(_selectedDate!)),
                     IconButton(onPressed: _openDatePicker, icon: Icon(Icons.calendar_month))
                   ],
                 )
