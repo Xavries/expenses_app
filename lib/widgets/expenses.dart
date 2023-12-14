@@ -71,19 +71,19 @@ class _ExpensesState extends State<Expenses> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Веди фінанси'),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.orange.shade900,
-                Colors.orange.shade500,
-                Colors.orange.shade100,
-              ],
-            ),
-          ),
-        ),
+        // flexibleSpace: Container(
+        //   decoration: BoxDecoration(
+        //     gradient: LinearGradient(
+        //       begin: Alignment.topCenter,
+        //       end: Alignment.bottomCenter,
+        //       colors: [
+        //         Colors.orange.shade900,
+        //         Colors.orange.shade500,
+        //         Colors.orange.shade100,
+        //       ],
+        //     ),
+        //   ),
+        // ),
         // backgroundColor: Color(LinearGradient(colors: [Color(Colors.green), Color(Colors.blue)])),
         actions: [
         IconButton(
@@ -91,9 +91,22 @@ class _ExpensesState extends State<Expenses> {
           icon: const Icon(Icons.add)
           )
         ]),
-      body: Column(children: [
-        const Text('chart'),
-        Expanded(child: mainContent)
-        ]),);
+      // body: Container(
+      //   decoration: const BoxDecoration(
+      //     gradient: LinearGradient(
+      //       colors: [
+      //         Colors.orange,
+      //         Color.fromARGB(255, 78, 13, 151),
+      //       ],
+      //       begin: Alignment.topCenter,
+      //       end: Alignment.bottomCenter
+      //       )
+      //   ),
+        body: Column(children: [
+          const Text('chart'),
+          Expanded(child: mainContent)
+          ]),
+      // ),
+      );
   }
 }
