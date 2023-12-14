@@ -28,6 +28,21 @@ class _NewExpenseState extends State<NewExpense> {
     });
   }
 
+  void _saveNewExpense () {
+    final enteredAmount = double.tryParse(_amountController.text);
+    final amountInvalid = enteredAmount == null || enteredAmount <= 0;
+    if (_titleController.text.trim().isEmpty || amountInvalid || _selectedDate == null) {
+      showDialog(context: context, builder: (ctx) => AlertDialog(
+        title: const Text('Невірні дані!'),
+        content: const Text('Перевірте назву, кількість та дату.'),
+        actions: [
+          TextButton(onPressed: () {Navigator.pop(ctx);}, child: const Text('OK'))
+        ],
+      ));
+      return;
+    }
+  }
+
   @override
   void dispose() {
     _titleController.dispose();
@@ -96,7 +111,7 @@ class _NewExpenseState extends State<NewExpense> {
                 child: Text('Закрити')
               ),
               ElevatedButton(
-                onPressed: () {print('fff');},
+                onPressed: _saveNewExpense,
                 child: Text('Зберегти')
               ),
             ],
