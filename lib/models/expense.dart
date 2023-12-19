@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
+import 'package:isar/isar.dart';
+
+part 'expense.g.dart';
 
 final dateFormatter = DateFormat('EEE d/M/y');
 
@@ -62,3 +65,43 @@ class ExpenseCollectorFilter {
     return sum;
   }
 }
+
+@collection
+class ExpenseDbModel {
+  // title: 'Test1', amount: 11.1, date: DateTime.now(), category: Category.market
+  
+  // ExpenseDbModel({
+  //   this.title,
+  //   this.amount,
+  //   this.date,
+  //   this.category
+  // });
+
+  // Id id = Isar.autoIncrement;
+
+  // @Index(type: IndexType.value)
+  // final String? title;
+
+  // final double? amount;
+
+  // DateTime? date = DateTime.now();
+
+  // Category? category = Category.caffe;
+
+  Id id = Isar.autoIncrement;
+  late String title;
+  late double amount;
+  late DateTime? date = DateTime.now();
+  @enumerated
+  late Category category = Category.caffe;
+}
+
+// void initIsarSchema() async {
+
+//   final dir = await getApplicationDocumentsDirectory();
+//   final isar = await Isar.open(
+//     [ExpenseDbModel],
+//     directory: dir.path,
+//   );
+
+// }
