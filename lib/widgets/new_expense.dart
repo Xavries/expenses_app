@@ -1,5 +1,6 @@
-import 'package:expenses_app/models/expense.dart';
 import 'package:flutter/material.dart';
+import 'package:expenses_app/models/expense.dart';
+import 'package:expenses_app/isar_service.dart';
 
 class NewExpense extends StatefulWidget {
   const NewExpense({super.key, required this.onAddExpense});
@@ -13,9 +14,11 @@ class NewExpense extends StatefulWidget {
 }
 
 class _NewExpenseState extends State<NewExpense> {
+  final dbService = IsarService();
+
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
-  DateTime? _selectedDate;
+  DateTime? _selectedDate = DateTime.now();
   Category _selectedCategory = Category.caffe; 
 
   void _openDatePicker() async {
@@ -50,6 +53,15 @@ class _NewExpenseState extends State<NewExpense> {
       date: _selectedDate!,
       category: _selectedCategory
       ));
+    
+    dbService.saveExpenseDbModel(ExpenseDbModel()
+      ..title = _titleController.text
+      ..amount = enteredAmount
+      ..date = _selectedDate!
+      ..category = _selectedCategory
+    );
+
+    print(dbService.getAllExpenseDbModels());
     
     Navigator.pop(context);
   }
