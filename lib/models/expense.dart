@@ -68,36 +68,17 @@ class ExpenseCollectorFilter {
 
 @collection
 class ExpenseDbModel {
-  ExpenseDbModel(
-    {
-      this.id = Isar.autoIncrement,
-      required this.title,
-      required this.amount,
-      required this.date,
-      required this.category,
-    }
-  );
-  // title: 'Test1', amount: 11.1, date: DateTime.now(), category: Category.market
-  
-  // ExpenseDbModel({
-  //   this.title,
-  //   this.amount,
-  //   this.date,
-  //   this.category
-  // });
+  // ExpenseDbModel(
+  //   {
+  //     this.id = Isar.autoIncrement,
+  //     required this.title,
+  //     required this.amount,
+  //     required this.date,
+  //     required this.category,
+  //   }
+  // );
 
-  // Id id = Isar.autoIncrement;
-
-  // @Index(type: IndexType.value)
-  // final String? title;
-
-  // final double? amount;
-
-  // DateTime? date = DateTime.now();
-
-  // Category? category = Category.caffe;
-
-  Id id;
+  Id id = Isar.autoIncrement;
   late String title;
   late double amount;
   late DateTime date = DateTime.now();
@@ -108,13 +89,3 @@ class ExpenseDbModel {
     return dateFormatter.format(date);
   }
 }
-
-// void initIsarSchema() async {
-
-//   final dir = await getApplicationDocumentsDirectory();
-//   final isar = await Isar.open(
-//     [ExpenseDbModel],
-//     directory: dir.path,
-//   );
-
-// }

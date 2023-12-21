@@ -33,8 +33,13 @@ const ExpenseDbModelSchema = CollectionSchema(
       name: r'date',
       type: IsarType.dateTime,
     ),
-    r'title': PropertySchema(
+    r'humanDate': PropertySchema(
       id: 3,
+      name: r'humanDate',
+      type: IsarType.string,
+    ),
+    r'title': PropertySchema(
+      id: 4,
       name: r'title',
       type: IsarType.string,
     )
@@ -59,6 +64,7 @@ int _expenseDbModelEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.humanDate.length * 3;
   bytesCount += 3 + object.title.length * 3;
   return bytesCount;
 }
@@ -72,7 +78,8 @@ void _expenseDbModelSerialize(
   writer.writeDouble(offsets[0], object.amount);
   writer.writeByte(offsets[1], object.category.index);
   writer.writeDateTime(offsets[2], object.date);
-  writer.writeString(offsets[3], object.title);
+  writer.writeString(offsets[3], object.humanDate);
+  writer.writeString(offsets[4], object.title);
 }
 
 ExpenseDbModel _expenseDbModelDeserialize(
@@ -86,9 +93,9 @@ ExpenseDbModel _expenseDbModelDeserialize(
   object.category =
       _ExpenseDbModelcategoryValueEnumMap[reader.readByteOrNull(offsets[1])] ??
           Category.market;
-  object.date = reader.readDateTimeOrNull(offsets[2]);
+  object.date = reader.readDateTime(offsets[2]);
   object.id = id;
-  object.title = reader.readString(offsets[3]);
+  object.title = reader.readString(offsets[4]);
   return object;
 }
 
@@ -106,8 +113,10 @@ P _expenseDbModelDeserializeProp<P>(
               reader.readByteOrNull(offset)] ??
           Category.market) as P;
     case 2:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 3:
+      return (reader.readString(offset)) as P;
+    case 4:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -346,25 +355,7 @@ extension ExpenseDbModelQueryFilter
   }
 
   QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterFilterCondition>
-      dateIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'date',
-      ));
-    });
-  }
-
-  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterFilterCondition>
-      dateIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'date',
-      ));
-    });
-  }
-
-  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterFilterCondition>
-      dateEqualTo(DateTime? value) {
+      dateEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'date',
@@ -375,7 +366,7 @@ extension ExpenseDbModelQueryFilter
 
   QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterFilterCondition>
       dateGreaterThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -389,7 +380,7 @@ extension ExpenseDbModelQueryFilter
 
   QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterFilterCondition>
       dateLessThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -403,8 +394,8 @@ extension ExpenseDbModelQueryFilter
 
   QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterFilterCondition>
       dateBetween(
-    DateTime? lower,
-    DateTime? upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -415,6 +406,142 @@ extension ExpenseDbModelQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterFilterCondition>
+      humanDateEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'humanDate',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterFilterCondition>
+      humanDateGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'humanDate',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterFilterCondition>
+      humanDateLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'humanDate',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterFilterCondition>
+      humanDateBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'humanDate',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterFilterCondition>
+      humanDateStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'humanDate',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterFilterCondition>
+      humanDateEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'humanDate',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterFilterCondition>
+      humanDateContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'humanDate',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterFilterCondition>
+      humanDateMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'humanDate',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterFilterCondition>
+      humanDateIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'humanDate',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterFilterCondition>
+      humanDateIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'humanDate',
+        value: '',
       ));
     });
   }
@@ -657,6 +784,19 @@ extension ExpenseDbModelQuerySortBy
     });
   }
 
+  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterSortBy> sortByHumanDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'humanDate', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterSortBy>
+      sortByHumanDateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'humanDate', Sort.desc);
+    });
+  }
+
   QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterSortBy> sortByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -710,6 +850,19 @@ extension ExpenseDbModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterSortBy> thenByHumanDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'humanDate', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterSortBy>
+      thenByHumanDateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'humanDate', Sort.desc);
+    });
+  }
+
   QueryBuilder<ExpenseDbModel, ExpenseDbModel, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -755,6 +908,13 @@ extension ExpenseDbModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<ExpenseDbModel, ExpenseDbModel, QDistinct> distinctByHumanDate(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'humanDate', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<ExpenseDbModel, ExpenseDbModel, QDistinct> distinctByTitle(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -783,9 +943,15 @@ extension ExpenseDbModelQueryProperty
     });
   }
 
-  QueryBuilder<ExpenseDbModel, DateTime?, QQueryOperations> dateProperty() {
+  QueryBuilder<ExpenseDbModel, DateTime, QQueryOperations> dateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'date');
+    });
+  }
+
+  QueryBuilder<ExpenseDbModel, String, QQueryOperations> humanDateProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'humanDate');
     });
   }
 

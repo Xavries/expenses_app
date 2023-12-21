@@ -3,9 +3,11 @@ import 'package:expenses_app/models/expense.dart';
 import 'package:expenses_app/isar_service.dart';
 
 class NewExpense extends StatefulWidget {
-  const NewExpense({super.key, required this.onAddExpense});
+  NewExpense({super.key, required this.onAddExpense});
 
   final void Function(Expense newExpense) onAddExpense;
+
+  final dbService = IsarService();
 
   @override
   State<NewExpense> createState() {
@@ -14,7 +16,6 @@ class NewExpense extends StatefulWidget {
 }
 
 class _NewExpenseState extends State<NewExpense> {
-  final dbService = IsarService();
 
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
@@ -54,14 +55,14 @@ class _NewExpenseState extends State<NewExpense> {
       category: _selectedCategory
       ));
     
-    dbService.saveExpenseDbModel(ExpenseDbModel()
+    widget.dbService.saveExpenseDbModel(ExpenseDbModel()
       ..title = _titleController.text
       ..amount = enteredAmount
       ..date = _selectedDate!
       ..category = _selectedCategory
     );
 
-    print(dbService.getAllExpenseDbModels());
+    // print(dbService.getAllExpenseDbModels());
     
     Navigator.pop(context);
   }
@@ -135,6 +136,14 @@ class _NewExpenseState extends State<NewExpense> {
               ),
               ElevatedButton(
                 onPressed: _saveNewExpense,
+                // onPressed: () async {
+                //   widget.dbService.saveExpenseDbModel(ExpenseDbModel()
+                //     ..title = 'test1'
+                //     ..amount = 11.11
+                //     ..date = DateTime.now()
+                //     ..category = Category.other
+                //   );
+                // },
                 child: Text('Зберегти')
               ),
             ],

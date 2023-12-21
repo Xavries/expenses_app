@@ -21,10 +21,10 @@ class IsarService {
     return allExpenses;
   }
 
-  // Stream<List<ExpenseDbModel>> listenToExpenseDbModels() async* {
-  //   final isar = await db;
-  //   yield* isar.expenseDbModels.where().watch(initialReturn: true);
-  // }
+  Stream<List<ExpenseDbModel>> listenToExpenseDbModels() async* {
+    final isar = await db;
+    yield* isar.expenseDbModels.where().watch();
+  }
 
   Future<void> cleanDb() async {
     final isar = await db;

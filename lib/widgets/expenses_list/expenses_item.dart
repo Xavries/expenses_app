@@ -5,7 +5,7 @@ class ExpensesItem extends StatelessWidget {
   const ExpensesItem(this.expense, {super.key});
 
 
-  final Expense expense;
+  final ExpenseDbModel expense;
 
   @override
   Widget build(BuildContext context) {
