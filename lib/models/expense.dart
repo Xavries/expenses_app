@@ -47,13 +47,13 @@ class ExpenseCollectorFilter {
   });
 
   ExpenseCollectorFilter.forCategory(
-    List<Expense> allExpenses, this.category
+    List<ExpenseDbModel> allExpenses, this.category
   ) : expenses = allExpenses.where(
     (expense) => expense.category == category
     ).toList();
 
   final Category category;
-  final List<Expense> expenses;
+  final List<ExpenseDbModel> expenses;
 
   double get totalExpenses {
     double sum = 0;

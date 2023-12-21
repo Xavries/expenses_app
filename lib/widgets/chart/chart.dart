@@ -2,22 +2,25 @@ import 'package:flutter/material.dart';
 
 import 'package:expenses_app/widgets/chart/chart_bar.dart';
 import 'package:expenses_app/models/expense.dart';
+import 'package:expenses_app/isar_service.dart';
 
 class Chart extends StatelessWidget {
-  const Chart({super.key, required this.expenses});
+  // const Chart({super.key, required this.expenses});
+  Chart({super.key});
 
-  final List<Expense> expenses;
+  // final List<Expense> expenses;
+  final service = IsarService();
 
-  List<ExpenseCollectorFilter> get buckets {
+  List<ExpenseCollectorFilter> buckets (dbExpenses) {
     return [
-      ExpenseCollectorFilter.forCategory(expenses, Category.caffe),
-      ExpenseCollectorFilter.forCategory(expenses, Category.market),
-      ExpenseCollectorFilter.forCategory(expenses, Category.travel),
-      ExpenseCollectorFilter.forCategory(expenses, Category.other),
+      ExpenseCollectorFilter.forCategory(dbExpenses, Category.caffe),
+      ExpenseCollectorFilter.forCategory(dbExpenses, Category.market),
+      ExpenseCollectorFilter.forCategory(dbExpenses, Category.travel),
+      ExpenseCollectorFilter.forCategory(dbExpenses, Category.other),
     ];
   }
 
-  double get maxTotalExpense {
+  double maxTotalExpense (buckets) {
     double maxTotalExpense = 0;
 
     for (final bucket in buckets) {
@@ -33,63 +36,75 @@ class Chart extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDarkMode =
         MediaQuery.of(context).platformBrightness == Brightness.dark;
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(
-        vertical: 16,
-        horizontal: 8,
-      ),
-      width: double.infinity,
-      height: 180,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        gradient: LinearGradient(
-          colors: [
-            Theme.of(context).colorScheme.primary.withOpacity(0.3),
-            Theme.of(context).colorScheme.primary.withOpacity(0.0)
-          ],
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-        ),
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                for (final bucket in buckets) // alternative to map()
-                  ChartBar(
-                    fill: bucket.totalExpenses == 0
-                        ? 0
-                        : bucket.totalExpenses / maxTotalExpense,
-                  )
+    return FutureBuilder<List<ExpenseDbModel?>>(
+      future: service.getAllExpenseDbModels(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) return Text(snapshot.error.toString());
+
+        if (snapshot.data == null || snapshot.data!.isEmpty) {
+          return const Text('Chart generation is in progress...');
+        }
+        final dbExpensesFromFuture = buckets(snapshot.data);
+
+        return Container(
+          margin: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(
+            vertical: 16,
+            horizontal: 8,
+          ),
+          width: double.infinity,
+          height: 180,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            gradient: LinearGradient(
+              colors: [
+                Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                Theme.of(context).colorScheme.primary.withOpacity(0.0)
               ],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
             ),
           ),
-          const SizedBox(height: 12),
-          Row(
-            children: buckets
-                .map(
-                  (bucket) => Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Icon(
-                        categoryIcons[bucket.category],
-                        color: isDarkMode
-                            ? Theme.of(context).colorScheme.secondary
-                            : Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.7),
+          child: Column(
+            children: [
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    for (final bucket in dbExpensesFromFuture) // alternative to map()
+                      ChartBar(
+                        fill: bucket.totalExpenses == 0
+                            ? 0
+                            : bucket.totalExpenses / maxTotalExpense(dbExpensesFromFuture),
+                      )
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: dbExpensesFromFuture
+                    .map(
+                      (bucket) => Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: Icon(
+                            categoryIcons[bucket.category],
+                            color: isDarkMode
+                                ? Theme.of(context).colorScheme.secondary
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.7),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                )
-                .toList(),
-          )
-        ],
-      ),
+                    )
+                    .toList(),
+              )
+            ],
+          ),
+        );
+      }
     );
   }
 }
