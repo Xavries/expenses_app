@@ -29,7 +29,8 @@ class ExpensesList extends StatelessWidget {
           }
           else {
             return ListView.builder(
-            itemCount: dbExpensesFromFuture.length, itemBuilder: (ctx, index) => Dismissible(
+              reverse: true,
+              itemCount: dbExpensesFromFuture.length, itemBuilder: (ctx, index) => Dismissible(
               background: Container(
                 color: Theme.of(context).colorScheme.scrim,
                 margin: EdgeInsets.symmetric(
