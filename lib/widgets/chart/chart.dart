@@ -80,7 +80,22 @@ class Chart extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 6),
+              Row(
+                children: dbExpensesFromFuture
+                    .map(
+                      (bucket) => Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: Text(
+                            bucket.totalExpenses.toString(),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
               Row(
                 children: dbExpensesFromFuture
                     .map(
