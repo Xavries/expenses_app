@@ -31,6 +31,14 @@ class IsarService {
     await isar.writeTxn(() => isar.clear());
   }
 
+  Future<void> removeExpense(ExpenseDbModel expenseToRemove) async {
+    final isar = await db;
+    await isar.writeTxn(() async {
+      await isar.expenseDbModels.delete(expenseToRemove.id);
+      }
+    );
+  }
+
 
   Future<Isar> openDB() async {
     if (Isar.instanceNames.isEmpty) {

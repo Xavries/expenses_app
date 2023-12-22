@@ -4,6 +4,7 @@ import 'package:expenses_app/models/expense.dart';
 import 'package:expenses_app/widgets/new_expense.dart';
 import 'package:expenses_app/widgets/expenses_list/expenses_list.dart';
 import 'package:expenses_app/widgets/chart/chart.dart';
+import 'package:expenses_app/isar_service.dart';
 
 class Expenses extends StatefulWidget {
   const Expenses({super.key});
@@ -15,6 +16,8 @@ class Expenses extends StatefulWidget {
 }
 
 class _ExpensesState extends State<Expenses> {
+
+  final service = IsarService();
 
   final List<Expense> _registeredExpenses = [
     Expense(title: 'Test1', amount: 11.1, date: DateTime.now(), category: Category.market),
@@ -36,12 +39,7 @@ class _ExpensesState extends State<Expenses> {
     });
   }
 
-  void _removeExpense(Expense expense) {
-    final expenseIndex = _registeredExpenses.indexOf(expense);
-
-    setState(() {
-      _registeredExpenses.remove(expense);
-    });
+  void _removeExpense(ExpenseDbModel expense) {
 
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -50,13 +48,17 @@ class _ExpensesState extends State<Expenses> {
         content: const Text('Витрату видалено'),
         action: SnackBarAction(
           label: 'Повернути', onPressed: () {
-            setState(() {
-              _registeredExpenses.insert(expenseIndex, expense);
-            });
+            service.saveExpenseDbModel(ExpenseDbModel()
+              ..title = expense.title
+              ..amount = expense.amount
+              ..date = expense.date
+              ..category = expense.category
+            );
           }
           ),
         )
       );
+      service.removeExpense(expense);
   }
 
   @override

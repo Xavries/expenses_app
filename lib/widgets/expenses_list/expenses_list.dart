@@ -12,7 +12,7 @@ class ExpensesList extends StatelessWidget {
   });
 
   final List<Expense> expenses;
-  final void Function(Expense expense) onRemoveExpense;
+  final void Function(ExpenseDbModel expense) onRemoveExpense;
   final service = IsarService();
 
   @override
@@ -39,7 +39,7 @@ class ExpensesList extends StatelessWidget {
               ),
               key: ValueKey(dbExpensesFromFuture[index]),
               onDismissed: (direction) {
-                onRemoveExpense(expenses[index]);
+                onRemoveExpense(dbExpensesFromFuture[index]);
               },
               child: ExpensesItem(dbExpensesFromFuture[index])
               )
