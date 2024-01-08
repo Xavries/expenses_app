@@ -23,13 +23,12 @@ class ExpensesList extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasError) return Text(snapshot.error.toString());
         if (snapshot.hasData) {
-          List<ExpenseDbModel> dbExpensesFromFuture = snapshot.data!;
+          List<ExpenseDbModel> dbExpensesFromFuture = snapshot.data!.reversed.toList();
           if (dbExpensesFromFuture.isEmpty) {
             return const Text("Немає записів");
           }
           else {
             return ListView.builder(
-              reverse: true,
               itemCount: dbExpensesFromFuture.length, itemBuilder: (ctx, index) => Dismissible(
               background: Container(
                 color: Theme.of(context).colorScheme.scrim,
