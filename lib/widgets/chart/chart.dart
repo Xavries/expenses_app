@@ -5,10 +5,8 @@ import 'package:expenses_app/models/expense.dart';
 import 'package:expenses_app/isar_service.dart';
 
 class Chart extends StatelessWidget {
-  // const Chart({super.key, required this.expenses});
   Chart({super.key});
 
-  // final List<Expense> expenses;
   final service = IsarService();
 
   List<ExpenseCollectorFilter> buckets (dbExpenses) {
