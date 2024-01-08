@@ -9,12 +9,13 @@ final dateFormatter = DateFormat('EEE d/M/y');
 
 const uuid = Uuid();
 
-enum Category {market, caffe, travel, other}
+enum Category {market, caffe, travel, pets, other}
 
 const categoryIcons = {
   Category.market: Icons.store,
   Category.caffe: Icons.coffee,
-  Category.travel: Icons.card_travel,
+  Category.travel: Icons.directions_car_filled_outlined,
+  Category.pets: Icons.pets,
   Category.other: Icons.money
 };
 

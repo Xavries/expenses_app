@@ -14,6 +14,7 @@ class Chart extends StatelessWidget {
       ExpenseCollectorFilter.forCategory(dbExpenses, Category.caffe),
       ExpenseCollectorFilter.forCategory(dbExpenses, Category.market),
       ExpenseCollectorFilter.forCategory(dbExpenses, Category.travel),
+      ExpenseCollectorFilter.forCategory(dbExpenses, Category.pets),
       ExpenseCollectorFilter.forCategory(dbExpenses, Category.other),
     ];
   }

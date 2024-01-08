@@ -127,13 +127,15 @@ const _ExpenseDbModelcategoryEnumValueMap = {
   'market': 0,
   'caffe': 1,
   'travel': 2,
-  'other': 3,
+  'pets': 3,
+  'other': 4,
 };
 const _ExpenseDbModelcategoryValueEnumMap = {
   0: Category.market,
   1: Category.caffe,
   2: Category.travel,
-  3: Category.other,
+  3: Category.pets,
+  4: Category.other,
 };
 
 Id _expenseDbModelGetId(ExpenseDbModel object) {
