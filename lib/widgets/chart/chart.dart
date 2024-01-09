@@ -35,6 +35,14 @@ class Chart extends StatelessWidget {
     return maxTotalExpense;
   }
 
+  Text getExpensesSum (List<ExpenseCollectorFilter> dbExpenses) {
+    double totalExpensesSumm = 0;
+    for (var bucket in dbExpenses) {
+      totalExpensesSumm += bucket.totalExpenses;
+    }
+    return Text('Загалом: $totalExpensesSumm');
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDarkMode =
@@ -118,7 +126,8 @@ class Chart extends StatelessWidget {
                       ),
                     )
                     .toList(),
-              )
+              ),
+              Container(child: getExpensesSum(dbExpensesFromFuture),)
             ],
           ),
         );
