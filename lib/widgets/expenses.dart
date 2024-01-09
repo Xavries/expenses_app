@@ -18,6 +18,14 @@ class Expenses extends StatefulWidget {
 class _ExpensesState extends State<Expenses> {
 
   final service = IsarService();
+  DateTimeRange _expensesDateRange = DateTimeRange(
+    end: DateTime.now(),
+    start: DateTime(
+        DateTime.now().year,
+        DateTime.now().month - 1,
+        DateTime.now().day
+      )
+    );
 
   final List<Expense> _registeredExpenses = [
     Expense(title: 'Test1', amount: 11.1, date: DateTime.now(), category: Category.market),
@@ -61,19 +69,33 @@ class _ExpensesState extends State<Expenses> {
       service.removeExpense(expense);
   }
 
+  void _openDateRangePicker() async {
+    final now = DateTime.now();
+    final firstDate = DateTime(now.year - 5, now.month, now.day);
+    final lastDate = DateTime(now.year + 1, now.month, now.day);
+
+    DateTimeRange? pickedDate = await showDateRangePicker(context: context, firstDate: firstDate, lastDate: lastDate);
+
+    setState(() {
+      if (pickedDate != null) {
+        _expensesDateRange = pickedDate;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget mainContent = const Center(child: Text('Немає витрат.'),);
 
     if (_registeredExpenses.isNotEmpty) {
       mainContent = ExpensesList(
-        expenses: _registeredExpenses, onRemoveExpense: _removeExpense,
+        expenses: _registeredExpenses, onRemoveExpense: _removeExpense, expensesDateRange: _expensesDateRange
         );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Веди фінанси'),
+        title: const Text('Мої фінанси'),
         // flexibleSpace: Container(
         //   decoration: BoxDecoration(
         //     gradient: LinearGradient(
@@ -89,6 +111,10 @@ class _ExpensesState extends State<Expenses> {
         // ),
         // backgroundColor: Color(LinearGradient(colors: [Color(Colors.green), Color(Colors.blue)])),
         actions: [
+        IconButton(
+          onPressed: _openDateRangePicker,
+          icon: const Icon(Icons.calendar_month)
+          ),
         IconButton(
           onPressed: _openAddExpense,
           icon: const Icon(Icons.add)
@@ -107,7 +133,7 @@ class _ExpensesState extends State<Expenses> {
       //   ),
         body: Column(children: [
           // Chart(expenses: _registeredExpenses),
-          Chart(),
+          Chart(expensesDateRange: _expensesDateRange),
           Expanded(child: mainContent)
           ]),
       // ),

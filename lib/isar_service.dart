@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:expenses_app/models/expense.dart';
@@ -15,9 +16,12 @@ class IsarService {
   }
 
 
-  Future<List<ExpenseDbModel>> getAllExpenseDbModels() async {
+  Future<List<ExpenseDbModel>> getAllExpenseDbModels(DateTimeRange expensesDateRange) async {
     final isar = await db;
-    final allExpenses = await isar.expenseDbModels.where().findAll();
+    // final allExpenses = await isar.expenseDbModels.where().findAll();
+    final allExpenses = await isar.expenseDbModels.filter().dateBetween(
+      expensesDateRange.start, expensesDateRange.end
+      ).findAll();
     return allExpenses;
   }
 

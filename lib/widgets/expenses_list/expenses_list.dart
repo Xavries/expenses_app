@@ -9,23 +9,25 @@ class ExpensesList extends StatelessWidget {
     super.key,
     required this.expenses,
     required this.onRemoveExpense,
+    required this.expensesDateRange,
   });
 
   final List<Expense> expenses;
   final void Function(ExpenseDbModel expense) onRemoveExpense;
+  final DateTimeRange expensesDateRange;
   final service = IsarService();
 
   @override
   Widget build(BuildContext context) {
 
     return FutureBuilder<List<ExpenseDbModel>>(
-      future: service.getAllExpenseDbModels(),
+      future: service.getAllExpenseDbModels(expensesDateRange),
       builder: (context, snapshot) {
         if (snapshot.hasError) return Text(snapshot.error.toString());
         if (snapshot.hasData) {
           List<ExpenseDbModel> dbExpensesFromFuture = snapshot.data!.reversed.toList();
           if (dbExpensesFromFuture.isEmpty) {
-            return const Text("Немає записів");
+            return const Center(child: Text("Немає записів"));
           }
           else {
             return ListView.builder(
@@ -45,7 +47,7 @@ class ExpensesList extends StatelessWidget {
             );
           }
         }
-        return const Text("Немає даних");
+        return const Center(child: Text("Немає даних"));
       },
     );
   }

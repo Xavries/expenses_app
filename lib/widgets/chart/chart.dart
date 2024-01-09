@@ -5,9 +5,13 @@ import 'package:expenses_app/models/expense.dart';
 import 'package:expenses_app/isar_service.dart';
 
 class Chart extends StatelessWidget {
-  Chart({super.key});
+  Chart({
+    super.key,
+    required this.expensesDateRange,
+    });
 
   final service = IsarService();
+  final DateTimeRange expensesDateRange;
 
   List<ExpenseCollectorFilter> buckets (dbExpenses) {
     return [
@@ -36,12 +40,12 @@ class Chart extends StatelessWidget {
     final isDarkMode =
         MediaQuery.of(context).platformBrightness == Brightness.dark;
     return FutureBuilder<List<ExpenseDbModel?>>(
-      future: service.getAllExpenseDbModels(),
+      future: service.getAllExpenseDbModels(expensesDateRange),
       builder: (context, snapshot) {
         if (snapshot.hasError) return Text(snapshot.error.toString());
 
         if (snapshot.data == null || snapshot.data!.isEmpty) {
-          return const Text('Chart generation is in progress...');
+          return const Center(child: Text('Chart generation is in progress...'));
         }
         final dbExpensesFromFuture = buckets(snapshot.data);
 
