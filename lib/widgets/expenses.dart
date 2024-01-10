@@ -19,7 +19,11 @@ class _ExpensesState extends State<Expenses> {
 
   final service = IsarService();
   DateTimeRange _expensesDateRange = DateTimeRange(
-    end: DateTime.now(),
+    end: DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day + 1
+      ),
     start: DateTime(
         DateTime.now().year,
         DateTime.now().month - 1,

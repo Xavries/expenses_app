@@ -20,7 +20,13 @@ class IsarService {
     final isar = await db;
     // final allExpenses = await isar.expenseDbModels.where().findAll();
     final allExpenses = await isar.expenseDbModels.filter().dateBetween(
-      expensesDateRange.start, expensesDateRange.end
+      expensesDateRange.start,
+      DateTime(
+        expensesDateRange.end.year,
+        expensesDateRange.end.month,
+        expensesDateRange.end.day + 1
+      ),
+      
       ).findAll();
     return allExpenses;
   }
